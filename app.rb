@@ -2,6 +2,7 @@ require 'bundler/setup'
 require 'sinatra'
 require 'sinatra/synchrony'
 require 'digest/sha1'
+require 'mini_magick'
 
 use Rack::CommonLogger
 set :static_cache_control, [:public, :max_age => 86400]
@@ -16,6 +17,10 @@ get %r{/(\d+x\d+)/(.+)} do
     redirect filename
   end
   halt 500 unless EM::Synchrony.popen("phantomjs rasterize.js #{url} #{width} #{height} public#{filename}")
+  pre_proc_image = File.open(File.join('public', filename), 'r')
+  image = MiniMagick::Image.read(pre_proc_image)
+  image.resize "250x195"
+  image.write  "public#{filename}"
   redirect filename
 end
 
