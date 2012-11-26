@@ -12,6 +12,9 @@ get %r{/(\d+x\d+)/(.+)} do
   url = %r{^https?://}.match(url) ? url : 'http://' + url
   width, height = params[:captures].first.split('x')
   filename = image_filename(url)
+  if File.exists?(File.join('public', filename))
+    redirect filename
+  end
   halt 500 unless EM::Synchrony.popen("phantomjs rasterize.js #{url} #{width} #{height} public#{filename}")
   redirect filename
 end
@@ -23,7 +26,7 @@ get '/weather/:city' do
 end
 
 def image_filename(str)
-  '/' + Digest::SHA1.hexdigest("#{Time.now.to_i}-#{str}") + '.png'
+  '/' + Digest::SHA1.hexdigest("v1-#{str}") + '.png'
 end
 
 class PopenHandler < EM::Connection
