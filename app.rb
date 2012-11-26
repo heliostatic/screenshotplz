@@ -26,7 +26,7 @@ get '/weather/:city' do
 end
 
 def image_filename(str)
-  '/' + Digest::SHA1.hexdigest("v1-#{str}") + '.png'
+  '/' + Digest::SHA1.hexdigest("v2-#{str}") + '.png'
 end
 
 class PopenHandler < EM::Connection
