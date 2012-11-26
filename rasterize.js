@@ -13,6 +13,7 @@ if (phantom.args.length != 4) {
             phantom.exit(1);
         } else {
             window.setTimeout(function () {
+                page.clipRect = { top: 0, left: 0, width: 1024, height: 800 };
                 page.render(output);
                 phantom.exit();
             }, 200);
