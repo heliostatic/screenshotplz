@@ -6,9 +6,11 @@ require 'mini_magick'
 
 use Rack::CommonLogger
 set :static_cache_control, [:public, :max_age => 86400]
-configure :production do
-  require 'newrelic_rpm'
-end
+Fiber.new {
+  configure :production do
+    require 'newrelic_rpm'
+  end
+}.resume
 
 get %r{/(\d+x\d+)/(.+)} do
   url = params[:captures].last
